@@ -154,122 +154,140 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppTokens.space16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Pond Selection (if multiple ponds)
-              if (widget.ponds.isNotEmpty) ...[
-                Text(
-                  AppStrings.get('pondName', lang),
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: AppTokens.space4),
-                DropdownButtonFormField<Pond>(
-                  isExpanded: true,
-                  initialValue: _selectedPond,
-                  items: widget.ponds.map((p) {
-                    return DropdownMenuItem(
-                      value: p,
-                      child: Text(p.name),
-                    );
-                  }).toList(),
-                  onChanged: (p) => setState(() => _selectedPond = p),
-                ),
-                const SizedBox(height: AppTokens.space16),
-              ],
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 640),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppTokens.space16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Pond Selection (if multiple ponds)
+                  if (widget.ponds.isNotEmpty) ...[
+                    Text(
+                      AppStrings.get('pondName', lang),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: AppTokens.space4),
+                    DropdownButtonFormField<Pond>(
+                      isExpanded: true,
+                      initialValue: _selectedPond,
+                      items: widget.ponds.map((p) {
+                        return DropdownMenuItem(
+                          value: p,
+                          child: Text(p.name),
+                        );
+                      }).toList(),
+                      onChanged: (p) => setState(() => _selectedPond = p),
+                    ),
+                    const SizedBox(height: AppTokens.space16),
+                  ],
 
-              // Symptom Grid Header
-              Text(
-                AppStrings.get('selectSymptoms', lang),
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: AppTokens.space12),
+                  // Symptom Grid Header
+                  Text(
+                    AppStrings.get('selectSymptoms', lang),
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: AppTokens.space12),
 
-              // 3-tap symptom picker grid
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: AppTokens.space12,
-                  mainAxisSpacing: AppTokens.space12,
-                  childAspectRatio: 1.08,
-                ),
-                itemCount: _symptomDefinitions.length,
-                itemBuilder: (context, index) {
-                  final item = _symptomDefinitions[index];
-                  final id = item['id'] as String;
-                  final icon = item['icon'] as IconData;
-                  final nameKey = item['nameKey'] as String;
-                  final isSelected = _selectedSymptoms.contains(id);
+                  // Responsive symptom picker grid
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isWide = constraints.maxWidth >= 480;
+                      final crossAxisCount = isWide ? 3 : 2;
+                      final childAspectRatio = isWide ? 1.45 : 1.22;
 
-                  return InkWell(
-                    onTap: () => _toggleSymptom(id),
-                    borderRadius: BorderRadius.circular(AppTokens.cardRadius),
-                    child: Container(
-                      padding: const EdgeInsets.all(AppTokens.space12),
-                      decoration: BoxDecoration(
-                        color: AppTokens.surface,
-                        borderRadius:
-                            BorderRadius.circular(AppTokens.cardRadius),
-                        border: Border.all(
-                          color: isSelected
-                              ? AppTokens.primary
-                              : AppTokens.border,
-                          width: isSelected ? 2.0 : 1.0,
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
+                          crossAxisSpacing: AppTokens.space12,
+                          mainAxisSpacing: AppTokens.space12,
+                          childAspectRatio: childAspectRatio,
                         ),
-                      ),
-                      child: Stack(
-                        children: [
-                          if (isSelected)
-                            const Align(
-                              alignment: Alignment.topRight,
-                              child: Icon(
-                                Icons.check_circle,
-                                color: AppTokens.primary,
-                                size: 20,
-                              ),
-                            ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                icon,
-                                size: 26,
+                        itemCount: _symptomDefinitions.length,
+                        itemBuilder: (context, index) {
+                          final item = _symptomDefinitions[index];
+                          final id = item['id'] as String;
+                          final icon = item['icon'] as IconData;
+                          final nameKey = item['nameKey'] as String;
+                          final isSelected = _selectedSymptoms.contains(id);
+
+                          return InkWell(
+                            onTap: () => _toggleSymptom(id),
+                            borderRadius: BorderRadius.circular(AppTokens.cardRadius),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 150),
+                              padding: const EdgeInsets.all(AppTokens.space12),
+                              decoration: BoxDecoration(
                                 color: isSelected
-                                    ? AppTokens.primary
-                                    : AppTokens.textSecondary,
-                              ),
-                              const SizedBox(height: AppTokens.space8),
-                              Flexible(
-                                child: Text(
-                                  AppStrings.get(nameKey, lang),
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: isSelected
-                                        ? FontWeight.w600
-                                        : FontWeight.w400,
-                                    color: isSelected
-                                        ? AppTokens.primary
-                                        : AppTokens.textPrimary,
-                                    height: 1.3,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+                                    ? AppTokens.primary.withValues(alpha: 0.08)
+                                    : AppTokens.surface,
+                                borderRadius:
+                                    BorderRadius.circular(AppTokens.cardRadius),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? AppTokens.primary
+                                      : AppTokens.border,
+                                  width: isSelected ? 2.0 : 1.0,
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                              child: Stack(
+                                children: [
+                                  if (isSelected)
+                                    const Align(
+                                      alignment: Alignment.topRight,
+                                      child: Icon(
+                                        Icons.check_circle,
+                                        color: AppTokens.primary,
+                                        size: 18,
+                                      ),
+                                    ),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          icon,
+                                          size: 24,
+                                          color: isSelected
+                                              ? AppTokens.primary
+                                              : AppTokens.textSecondary,
+                                        ),
+                                        const SizedBox(height: AppTokens.space8),
+                                        Flexible(
+                                          child: Text(
+                                            AppStrings.get(nameKey, lang),
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: isSelected
+                                                  ? FontWeight.w600
+                                                  : FontWeight.w400,
+                                              color: isSelected
+                                                  ? AppTokens.primary
+                                                  : AppTokens.textPrimary,
+                                              height: 1.25,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
 
               if (_errorMessage != null) ...[
                 const SizedBox(height: AppTokens.space12),
@@ -305,6 +323,8 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
           ),
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 }

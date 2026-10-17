@@ -49,5 +49,7 @@ app.*.map.json
 !.env.example
 assets/.env
 !assets/.env.example
+web/env.js
+!web/env.js.example
 android/app/google-services.json
 !android/app/google-services.json.example

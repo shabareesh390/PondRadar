@@ -98,8 +98,12 @@ class _AddPondScreenState extends State<AddPondScreen> {
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppTokens.space16),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppTokens.space16),
           child: Form(
             key: _formKey,
             child: Column(
@@ -241,6 +245,8 @@ class _AddPondScreenState extends State<AddPondScreen> {
           ),
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 }

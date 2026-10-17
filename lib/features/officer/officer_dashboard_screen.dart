@@ -8,6 +8,7 @@ import '../../models/symptom_report.dart';
 import '../../services/auth_service.dart';
 import '../../services/firestore_service.dart';
 import '../../widgets/app_banners.dart';
+import '../../widgets/map_availability.dart';
 
 class OfficerDashboardScreen extends StatefulWidget {
   final AuthService authService;
@@ -552,6 +553,54 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
               CameraUpdate.newLatLng(LatLng(a.centerLat, a.centerLng)),
             );
           },
+        ),
+      );
+    }
+
+    if (!isGoogleMapsAvailable()) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppTokens.space24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.map_outlined,
+                size: 56,
+                color: AppTokens.textSecondary,
+              ),
+              const SizedBox(height: AppTokens.space16),
+              Text(
+                'Map View (Google Maps API key not loaded)',
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppTokens.space8),
+              const Text(
+                'To display Google Maps in the web dashboard, provide an API key in web/env.js or URL query (?maps_key=KEY).',
+                style: TextStyle(fontSize: 13, color: AppTokens.textSecondary),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppTokens.space20),
+              Wrap(
+                spacing: AppTokens.space12,
+                runSpacing: AppTokens.space8,
+                alignment: WrapAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () => setState(() => _selectedSidebarTab = 1),
+                    icon: const Icon(Icons.table_chart_outlined, size: 18),
+                    label: Text('View Reports (${reports.length})'),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: () => setState(() => _selectedSidebarTab = 2),
+                    icon: const Icon(Icons.radar_outlined, size: 18),
+                    label: Text('View Clusters (${alerts.length})'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
     }

@@ -51,37 +51,85 @@ class FarmerHomeScreen extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppTokens.space16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Two Big Main Action Buttons
-              ElevatedButton.icon(
-                onPressed: ponds.isEmpty
-                    ? () => _navigateToAddPond(context)
-                    : () => _navigateToCheckWater(context, ponds.first),
-                icon: const Icon(Icons.water_drop_outlined),
-                label: Text(AppStrings.get('checkWater', lang)),
-              ),
-              const SizedBox(height: AppTokens.space12),
-              OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => ReportProblemScreen(
-                        userId: userId,
-                        ponds: ponds,
-                        firestoreService: firestoreService,
-                        languageNotifier: languageNotifier,
-                      ),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.warning_amber_outlined),
-                label: Text(AppStrings.get('reportProblem', lang)),
-              ),
-              const SizedBox(height: AppTokens.space24),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppTokens.space16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Two Main Action Buttons (Responsive row on web/desktop)
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isWide = constraints.maxWidth > 500;
+                      if (isWide) {
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: ponds.isEmpty
+                                    ? () => _navigateToAddPond(context)
+                                    : () => _navigateToCheckWater(context, ponds.first),
+                                icon: const Icon(Icons.water_drop_outlined),
+                                label: Text(AppStrings.get('checkWater', lang)),
+                              ),
+                            ),
+                            const SizedBox(width: AppTokens.space12),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) => ReportProblemScreen(
+                                        userId: userId,
+                                        ponds: ponds,
+                                        firestoreService: firestoreService,
+                                        languageNotifier: languageNotifier,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.warning_amber_outlined),
+                                label: Text(AppStrings.get('reportProblem', lang)),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: ponds.isEmpty
+                                ? () => _navigateToAddPond(context)
+                                : () => _navigateToCheckWater(context, ponds.first),
+                            icon: const Icon(Icons.water_drop_outlined),
+                            label: Text(AppStrings.get('checkWater', lang)),
+                          ),
+                          const SizedBox(height: AppTokens.space12),
+                          OutlinedButton.icon(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ReportProblemScreen(
+                                    userId: userId,
+                                    ponds: ponds,
+                                    firestoreService: firestoreService,
+                                    languageNotifier: languageNotifier,
+                                  ),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.warning_amber_outlined),
+                            label: Text(AppStrings.get('reportProblem', lang)),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: AppTokens.space24),
 
               // My Ponds Section
               Row(
@@ -201,7 +249,9 @@ class FarmerHomeScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 
   void _navigateToAddPond(BuildContext context) {

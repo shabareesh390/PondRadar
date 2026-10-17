@@ -141,107 +141,113 @@ class _AlertsScreenState extends State<AlertsScreen> {
               );
             }
 
-            return ListView.separated(
-              padding: const EdgeInsets.all(AppTokens.space16),
-              itemCount: alertItems.length,
-              separatorBuilder: (_, _) =>
-                  const SizedBox(height: AppTokens.space12),
-              itemBuilder: (context, index) {
-                final item = alertItems[index];
-                final alert = item['alert'] as OutbreakAlert;
-                final dist = item['minDistance'] as double;
-                final pondName = item['nearestPond'] as String;
+            return Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 720),
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(AppTokens.space16),
+                  itemCount: alertItems.length,
+                  separatorBuilder: (_, _) =>
+                      const SizedBox(height: AppTokens.space12),
+                  itemBuilder: (context, index) {
+                    final item = alertItems[index];
+                    final alert = item['alert'] as OutbreakAlert;
+                    final dist = item['minDistance'] as double;
+                    final pondName = item['nearestPond'] as String;
 
-                final isVeryClose = dist <= 5.0;
-                final badgeColor =
-                    isVeryClose ? AppTokens.riskHigh : AppTokens.riskMedium;
+                    final isVeryClose = dist <= 5.0;
+                    final badgeColor =
+                        isVeryClose ? AppTokens.riskHigh : AppTokens.riskMedium;
 
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppTokens.space16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+                    return Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppTokens.space16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
-                              isVeryClose
-                                  ? Icons.error_outline
-                                  : Icons.warning_amber_outlined,
-                              color: badgeColor,
-                              size: 22,
-                            ),
-                            const SizedBox(width: AppTokens.space8),
-                            Expanded(
-                              child: Text(
-                                AppStrings.get('nearbyAlert', lang),
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
+                            Row(
+                              children: [
+                                Icon(
+                                  isVeryClose
+                                      ? Icons.error_outline
+                                      : Icons.warning_amber_outlined,
                                   color: badgeColor,
+                                  size: 22,
                                 ),
+                                const SizedBox(width: AppTokens.space8),
+                                Expanded(
+                                  child: Text(
+                                    AppStrings.get('nearbyAlert', lang),
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: badgeColor,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: AppTokens.space12),
+                            const Divider(),
+                            const SizedBox(height: AppTokens.space12),
+                            if (pondName.isNotEmpty) ...[
+                              Text(
+                                '${dist.toStringAsFixed(1)} km from $pondName',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppTokens.textPrimary,
+                                ),
+                              ),
+                              const SizedBox(height: AppTokens.space4),
+                            ],
+                            Text(
+                              '${alert.uniqueReporters} independent farm reports within 3 km',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            const SizedBox(height: AppTokens.space8),
+                            Wrap(
+                              spacing: AppTokens.space8,
+                              runSpacing: AppTokens.space4,
+                              children: alert.symptoms.map((symptomKey) {
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppTokens.space8,
+                                    vertical: AppTokens.space4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppTokens.background,
+                                    borderRadius: BorderRadius.circular(
+                                      AppTokens.controlRadius,
+                                    ),
+                                    border: Border.all(color: AppTokens.border),
+                                  ),
+                                  child: Text(
+                                    _translateSymptom(symptomKey, lang),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: AppTokens.textPrimary,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                            const SizedBox(height: AppTokens.space8),
+                            Text(
+                              'Detected: ${alert.detectedAt.day}/${alert.detectedAt.month}/${alert.detectedAt.year} ${alert.detectedAt.hour}:${alert.detectedAt.minute.toString().padLeft(2, '0')}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppTokens.textSecondary,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: AppTokens.space12),
-                        const Divider(),
-                        const SizedBox(height: AppTokens.space12),
-                        if (pondName.isNotEmpty) ...[
-                          Text(
-                            '${dist.toStringAsFixed(1)} km from $pondName',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: AppTokens.textPrimary,
-                            ),
-                          ),
-                          const SizedBox(height: AppTokens.space4),
-                        ],
-                        Text(
-                          '${alert.uniqueReporters} independent farm reports within 3 km',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        const SizedBox(height: AppTokens.space8),
-                        Wrap(
-                          spacing: AppTokens.space8,
-                          runSpacing: AppTokens.space4,
-                          children: alert.symptoms.map((symptomKey) {
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppTokens.space8,
-                                vertical: AppTokens.space4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppTokens.background,
-                                borderRadius: BorderRadius.circular(
-                                  AppTokens.controlRadius,
-                                ),
-                                border: Border.all(color: AppTokens.border),
-                              ),
-                              child: Text(
-                                _translateSymptom(symptomKey, lang),
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: AppTokens.textPrimary,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                        const SizedBox(height: AppTokens.space8),
-                        Text(
-                          'Detected: ${alert.detectedAt.day}/${alert.detectedAt.month}/${alert.detectedAt.year} ${alert.detectedAt.hour}:${alert.detectedAt.minute.toString().padLeft(2, '0')}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppTokens.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+                      ),
+                    );
+                  },
+                ),
+              ),
             );
           },
         ),

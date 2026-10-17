@@ -91,145 +91,188 @@ class _WaterCheckScreenState extends State<WaterCheckScreen> {
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppTokens.space16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // pH Input
-                    Text(
-                      AppStrings.get('phLabel', lang),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: AppTokens.space4),
-                    TextFormField(
-                      controller: _phController,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      decoration: const InputDecoration(
-                        hintText: 'e.g. 7.8',
-                        suffixText: 'pH',
-                      ),
-                      validator: (val) {
-                        if (val == null || val.trim().isEmpty) {
-                          return AppStrings.get('phValidation', lang);
-                        }
-                        final num = double.tryParse(val.trim());
-                        if (num == null || num < 0 || num > 14) {
-                          return AppStrings.get('phValidation', lang);
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: AppTokens.space16),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 680),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppTokens.space16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final isWide = constraints.maxWidth >= 500;
 
-                    // Dissolved Oxygen
-                    Text(
-                      AppStrings.get('doLabel', lang),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: AppTokens.space4),
-                    TextFormField(
-                      controller: _doController,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      decoration: const InputDecoration(
-                        hintText: 'e.g. 5.0',
-                        suffixText: 'mg/L',
-                      ),
-                      validator: (val) {
-                        if (val == null || val.trim().isEmpty) {
-                          return AppStrings.get('doValidation', lang);
-                        }
-                        final num = double.tryParse(val.trim());
-                        if (num == null || num < 0) {
-                          return AppStrings.get('doValidation', lang);
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: AppTokens.space16),
-
-                    // Ammonia
-                    Text(
-                      AppStrings.get('ammoniaLabel', lang),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: AppTokens.space4),
-                    TextFormField(
-                      controller: _ammoniaController,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      decoration: const InputDecoration(
-                        hintText: 'e.g. 0.08',
-                        suffixText: 'mg/L',
-                      ),
-                      validator: (val) {
-                        if (val == null || val.trim().isEmpty) {
-                          return AppStrings.get('ammoniaValidation', lang);
-                        }
-                        final num = double.tryParse(val.trim());
-                        if (num == null || num < 0) {
-                          return AppStrings.get('ammoniaValidation', lang);
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: AppTokens.space16),
-
-                    // Temperature
-                    Text(
-                      AppStrings.get('temperatureLabel', lang),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: AppTokens.space4),
-                    TextFormField(
-                      controller: _tempController,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      decoration: const InputDecoration(
-                        hintText: 'e.g. 28.5',
-                        suffixText: '°C',
-                      ),
-                      validator: (val) {
-                        if (val == null || val.trim().isEmpty) {
-                          return AppStrings.get('temperatureValidation', lang);
-                        }
-                        final num = double.tryParse(val.trim());
-                        if (num == null || num < 0) {
-                          return AppStrings.get('temperatureValidation', lang);
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: AppTokens.space24),
-
-                    // Evaluate Button
-                    ElevatedButton(
-                      onPressed: _isSaving ? null : _evaluate,
-                      child: _isSaving
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: AppTokens.onPrimary,
+                        final phWidget = Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppStrings.get('phLabel', lang),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            const SizedBox(height: AppTokens.space4),
+                            TextFormField(
+                              controller: _phController,
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              decoration: const InputDecoration(
+                                hintText: 'e.g. 7.8',
+                                suffixText: 'pH',
                               ),
-                            )
-                          : Text(AppStrings.get('evaluateRisk', lang)),
+                              validator: (val) {
+                                if (val == null || val.trim().isEmpty) {
+                                  return AppStrings.get('phValidation', lang);
+                                }
+                                final num = double.tryParse(val.trim());
+                                if (num == null || num < 0 || num > 14) {
+                                  return AppStrings.get('phValidation', lang);
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        );
+
+                        final doWidget = Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppStrings.get('doLabel', lang),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            const SizedBox(height: AppTokens.space4),
+                            TextFormField(
+                              controller: _doController,
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              decoration: const InputDecoration(
+                                hintText: 'e.g. 5.0',
+                                suffixText: 'mg/L',
+                              ),
+                              validator: (val) {
+                                if (val == null || val.trim().isEmpty) {
+                                  return AppStrings.get('doValidation', lang);
+                                }
+                                final num = double.tryParse(val.trim());
+                                if (num == null || num < 0) {
+                                  return AppStrings.get('doValidation', lang);
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        );
+
+                        final ammoniaWidget = Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppStrings.get('ammoniaLabel', lang),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            const SizedBox(height: AppTokens.space4),
+                            TextFormField(
+                              controller: _ammoniaController,
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              decoration: const InputDecoration(
+                                hintText: 'e.g. 0.08',
+                                suffixText: 'mg/L',
+                              ),
+                              validator: (val) {
+                                if (val == null || val.trim().isEmpty) {
+                                  return AppStrings.get('ammoniaValidation', lang);
+                                }
+                                final num = double.tryParse(val.trim());
+                                if (num == null || num < 0) {
+                                  return AppStrings.get('ammoniaValidation', lang);
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        );
+
+                        final tempWidget = Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppStrings.get('temperatureLabel', lang),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            const SizedBox(height: AppTokens.space4),
+                            TextFormField(
+                              controller: _tempController,
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              decoration: const InputDecoration(
+                                hintText: 'e.g. 28.5',
+                                suffixText: '°C',
+                              ),
+                              validator: (val) {
+                                if (val == null || val.trim().isEmpty) {
+                                  return AppStrings.get('temperatureValidation', lang);
+                                }
+                                final num = double.tryParse(val.trim());
+                                if (num == null || num < 0) {
+                                  return AppStrings.get('temperatureValidation', lang);
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        );
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (isWide) ...[
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(child: phWidget),
+                                  const SizedBox(width: AppTokens.space16),
+                                  Expanded(child: doWidget),
+                                ],
+                              ),
+                              const SizedBox(height: AppTokens.space16),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(child: ammoniaWidget),
+                                  const SizedBox(width: AppTokens.space16),
+                                  Expanded(child: tempWidget),
+                                ],
+                              ),
+                            ] else ...[
+                              phWidget,
+                              const SizedBox(height: AppTokens.space16),
+                              doWidget,
+                              const SizedBox(height: AppTokens.space16),
+                              ammoniaWidget,
+                              const SizedBox(height: AppTokens.space16),
+                              tempWidget,
+                            ],
+                            const SizedBox(height: AppTokens.space24),
+
+                            // Evaluate Button
+                            ElevatedButton(
+                              onPressed: _isSaving ? null : _evaluate,
+                              child: _isSaving
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppTokens.onPrimary,
+                                      ),
+                                    )
+                                  : Text(AppStrings.get('evaluateRisk', lang)),
+                            ),
+                          ],
+                        );
+                      },
                     ),
-                  ],
-                ),
-              ),
+                  ),
 
               // Risk Assessment Result Card
               if (_currentEvaluation != null) ...[
@@ -391,6 +434,8 @@ class _WaterCheckScreenState extends State<WaterCheckScreen> {
           ),
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 }

@@ -66,9 +66,13 @@ class _RolePickerScreenState extends State<RolePickerScreen> {
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(AppTokens.space16),
+            return Align(
+              alignment: Alignment.topCenter,
               child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(AppTokens.space16),
+                  child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight: (constraints.maxHeight - (AppTokens.space16 * 2)).clamp(0.0, double.infinity),
                 ),
@@ -209,10 +213,12 @@ class _RolePickerScreenState extends State<RolePickerScreen> {
                   ),
                 ),
               ),
-            );
-          },
-        ),
-      ),
-    );
+            ),
+          ),
+        );
+      },
+    ),
+  ),
+);
   }
 }
