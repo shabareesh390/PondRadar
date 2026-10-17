@@ -85,11 +85,12 @@ class FarmerHomeScreen extends StatelessWidget {
 
               // My Ponds Section
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    AppStrings.get('myPonds', lang),
-                    style: Theme.of(context).textTheme.titleMedium,
+                  Expanded(
+                    child: Text(
+                      AppStrings.get('myPonds', lang),
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                   ),
                   if (ponds.isNotEmpty)
                     TextButton(
@@ -136,7 +137,6 @@ class FarmerHomeScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
                                 child: Column(
@@ -158,6 +158,7 @@ class FarmerHomeScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
+                              const SizedBox(width: AppTokens.space8),
                               if (pond.lastRisk != null)
                                 RiskBadge(risk: pond.lastRisk!, language: lang)
                               else

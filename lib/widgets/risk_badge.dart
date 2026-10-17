@@ -42,8 +42,8 @@ class RiskBadge extends StatelessWidget {
     if (isLarge) {
       return Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppTokens.space16,
-          vertical: AppTokens.space8,
+          horizontal: AppTokens.space12,
+          vertical: AppTokens.space4,
         ),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
@@ -53,15 +53,18 @@ class RiskBadge extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: color, size: 22),
+            Icon(icon, color: color, size: 20),
             const SizedBox(width: AppTokens.space8),
-            Text(
-              label,
-              style: TextStyle(
-                color: color,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                height: 1.5,
+            Flexible(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  height: 1.4,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
@@ -84,13 +87,16 @@ class RiskBadge extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 16),
           const SizedBox(width: AppTokens.space4),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              height: 1.5,
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                height: 1.4,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],

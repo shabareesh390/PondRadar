@@ -241,12 +241,14 @@ class _WaterCheckScreenState extends State<WaterCheckScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              AppStrings.get('riskAssessment', lang),
-                              style: Theme.of(context).textTheme.titleMedium,
+                            Expanded(
+                              child: Text(
+                                AppStrings.get('riskAssessment', lang),
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
                             ),
+                            const SizedBox(width: AppTokens.space8),
                             RiskBadge(
                               risk: _currentEvaluation!.overallRisk,
                               language: lang,
@@ -350,27 +352,29 @@ class _WaterCheckScreenState extends State<WaterCheckScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(AppTokens.space12),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    timeStr,
-                                    style: Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  const SizedBox(height: AppTokens.space4),
-                                  Text(
-                                    eval.parameterResults
-                                        .map((p) => '${p.nameEn}: ${p.value}')
-                                        .join(' | '),
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      color: AppTokens.textPrimary,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      timeStr,
+                                      style: Theme.of(context).textTheme.bodySmall,
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(height: AppTokens.space4),
+                                    Text(
+                                      eval.parameterResults
+                                          .map((p) => '${p.nameEn}: ${p.value}')
+                                          .join(' • '),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: AppTokens.textPrimary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
+                              const SizedBox(width: AppTokens.space8),
                               RiskBadge(risk: eval.overallRisk, language: lang),
                             ],
                           ),

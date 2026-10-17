@@ -152,26 +152,30 @@ class _AddPondScreenState extends State<AddPondScreen> {
 
                 // Location Header & GPS button
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      AppStrings.get('location', lang),
-                      style: Theme.of(context).textTheme.bodySmall,
+                    Expanded(
+                      child: Text(
+                        AppStrings.get('location', lang),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                     ),
-                    TextButton.icon(
-                      onPressed: _isFetchingLocation ? null : _fetchGPSLocation,
-                      icon: _isFetchingLocation
-                          ? const SizedBox(
-                              width: 14,
-                              height: 14,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.my_location, size: 16),
-                      label: Text(
-                        _isFetchingLocation
-                            ? AppStrings.get('fetchingLocation', lang)
-                            : AppStrings.get('useCurrentLocation', lang),
-                        style: const TextStyle(fontSize: 13),
+                    Flexible(
+                      child: TextButton.icon(
+                        onPressed: _isFetchingLocation ? null : _fetchGPSLocation,
+                        icon: _isFetchingLocation
+                            ? const SizedBox(
+                                width: 14,
+                                height: 14,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Icon(Icons.my_location, size: 16),
+                        label: Text(
+                          _isFetchingLocation
+                              ? AppStrings.get('fetchingLocation', lang)
+                              : AppStrings.get('useCurrentLocation', lang),
+                          style: const TextStyle(fontSize: 13),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
                   ],

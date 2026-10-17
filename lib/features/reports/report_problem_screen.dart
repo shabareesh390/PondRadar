@@ -195,7 +195,7 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
                   crossAxisCount: 2,
                   crossAxisSpacing: AppTokens.space12,
                   mainAxisSpacing: AppTokens.space12,
-                  childAspectRatio: 1.35,
+                  childAspectRatio: 1.08,
                 ),
                 itemCount: _symptomDefinitions.length,
                 itemBuilder: (context, index) {
@@ -235,29 +235,32 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
                                 icon,
-                                size: 28,
+                                size: 26,
                                 color: isSelected
                                     ? AppTokens.primary
                                     : AppTokens.textSecondary,
                               ),
                               const SizedBox(height: AppTokens.space8),
-                              Text(
-                                AppStrings.get(nameKey, lang),
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: isSelected
-                                      ? FontWeight.w500
-                                      : FontWeight.w400,
-                                  color: isSelected
-                                      ? AppTokens.primary
-                                      : AppTokens.textPrimary,
-                                  height: 1.4,
+                              Flexible(
+                                child: Text(
+                                  AppStrings.get(nameKey, lang),
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                    color: isSelected
+                                        ? AppTokens.primary
+                                        : AppTokens.textPrimary,
+                                    height: 1.3,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),

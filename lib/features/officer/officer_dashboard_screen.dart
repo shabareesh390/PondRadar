@@ -185,90 +185,101 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
     return Container(
       width: 250,
       color: AppTokens.surface,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(AppTokens.space16),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.shield_outlined,
-                  color: AppTokens.primary,
-                  size: 26,
-                ),
-                const SizedBox(width: AppTokens.space8),
-                Expanded(
-                  child: Text(
-                    AppStrings.get('officerDashboard', lang),
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Divider(height: 1),
-          ListTile(
-            leading: const Icon(Icons.map_outlined),
-            title: Text(AppStrings.get('tabMap', lang)),
-            selected: _selectedSidebarTab == 0,
-            selectedColor: AppTokens.primary,
-            onTap: () => setState(() => _selectedSidebarTab = 0),
-          ),
-          ListTile(
-            leading: const Icon(Icons.table_chart_outlined),
-            title: Text(AppStrings.get('tabReports', lang)),
-            selected: _selectedSidebarTab == 1,
-            selectedColor: AppTokens.primary,
-            onTap: () => setState(() => _selectedSidebarTab = 1),
-          ),
-          ListTile(
-            leading: const Icon(Icons.radar_outlined),
-            title: Text(AppStrings.get('tabAlerts', lang)),
-            selected: _selectedSidebarTab == 2,
-            selectedColor: AppTokens.primary,
-            onTap: () => setState(() => _selectedSidebarTab = 2),
-          ),
-          const Spacer(),
-          const Divider(height: 1),
-          Padding(
-            padding: const EdgeInsets.all(AppTokens.space16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (_isLoadingDemo)
-                  const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(AppTokens.space8),
-                      child: CircularProgressIndicator(strokeWidth: 2),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(AppTokens.space16),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.shield_outlined,
+                            color: AppTokens.primary,
+                            size: 26,
+                          ),
+                          const SizedBox(width: AppTokens.space8),
+                          Expanded(
+                            child: Text(
+                              AppStrings.get('officerDashboard', lang),
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  )
-                else ...[
-                  ElevatedButton(
-                    onPressed: _loadDemo,
-                    child: Text(AppStrings.get('loadDemoData', lang)),
-                  ),
-                  const SizedBox(height: AppTokens.space8),
-                  OutlinedButton(
-                    onPressed: _simulateOutbreak,
-                    child: Text(AppStrings.get('simulateOutbreak', lang)),
-                  ),
-                  const SizedBox(height: AppTokens.space8),
-                  TextButton(
-                    onPressed: _clearDemo,
-                    child: Text(AppStrings.get('clearDemoData', lang)),
-                  ),
-                ],
-                const SizedBox(height: AppTokens.space12),
-                OutlinedButton.icon(
-                  onPressed: () => widget.authService.switchRole(),
-                  icon: const Icon(Icons.swap_horiz, size: 16),
-                  label: Text(AppStrings.get('switchRole', lang)),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: const Icon(Icons.map_outlined),
+                      title: Text(AppStrings.get('tabMap', lang)),
+                      selected: _selectedSidebarTab == 0,
+                      selectedColor: AppTokens.primary,
+                      onTap: () => setState(() => _selectedSidebarTab = 0),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.table_chart_outlined),
+                      title: Text(AppStrings.get('tabReports', lang)),
+                      selected: _selectedSidebarTab == 1,
+                      selectedColor: AppTokens.primary,
+                      onTap: () => setState(() => _selectedSidebarTab = 1),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.radar_outlined),
+                      title: Text(AppStrings.get('tabAlerts', lang)),
+                      selected: _selectedSidebarTab == 2,
+                      selectedColor: AppTokens.primary,
+                      onTap: () => setState(() => _selectedSidebarTab = 2),
+                    ),
+                    const Spacer(),
+                    const Divider(height: 1),
+                    Padding(
+                      padding: const EdgeInsets.all(AppTokens.space16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (_isLoadingDemo)
+                            const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(AppTokens.space8),
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                            )
+                          else ...[
+                            ElevatedButton(
+                              onPressed: _loadDemo,
+                              child: Text(AppStrings.get('loadDemoData', lang)),
+                            ),
+                            const SizedBox(height: AppTokens.space8),
+                            OutlinedButton(
+                              onPressed: _simulateOutbreak,
+                              child: Text(AppStrings.get('simulateOutbreak', lang)),
+                            ),
+                            const SizedBox(height: AppTokens.space8),
+                            TextButton(
+                              onPressed: _clearDemo,
+                              child: Text(AppStrings.get('clearDemoData', lang)),
+                            ),
+                          ],
+                          const SizedBox(height: AppTokens.space12),
+                          OutlinedButton.icon(
+                            onPressed: () => widget.authService.switchRole(),
+                            icon: const Icon(Icons.swap_horiz, size: 16),
+                            label: Text(AppStrings.get('switchRole', lang)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -567,90 +578,104 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
     return Container(
       width: 320,
       color: AppTokens.surface,
-      padding: const EdgeInsets.all(AppTokens.space16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                _selectedCluster != null ? 'Cluster Detail' : 'Report Detail',
-                style: Theme.of(context).textTheme.titleMedium,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(AppTokens.space16),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: (constraints.maxHeight - (AppTokens.space16 * 2)).clamp(0.0, double.infinity),
               ),
-              IconButton(
-                icon: const Icon(Icons.close, size: 20),
-                onPressed: () {
-                  setState(() {
-                    _selectedCluster = null;
-                    _selectedReport = null;
-                  });
-                },
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _selectedCluster != null ? 'Cluster Detail' : 'Report Detail',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close, size: 20),
+                          onPressed: () {
+                            setState(() {
+                              _selectedCluster = null;
+                              _selectedReport = null;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    const Divider(),
+                    const SizedBox(height: AppTokens.space12),
+                    if (_selectedCluster != null) ...[
+                      Text('Cluster ID: ${_selectedCluster!.id}',
+                          style: Theme.of(context).textTheme.bodySmall),
+                      const SizedBox(height: AppTokens.space8),
+                      Text(
+                        'Center: ${_selectedCluster!.centerLat}, ${_selectedCluster!.centerLng}',
+                        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                      ),
+                      const SizedBox(height: AppTokens.space8),
+                      Text('Radius: ${_selectedCluster!.radiusKm} km'),
+                      const SizedBox(height: AppTokens.space8),
+                      Text('Independent reporting farms: ${_selectedCluster!.uniqueReporters}'),
+                      const SizedBox(height: AppTokens.space8),
+                      Text('Total reports in cluster: ${_selectedCluster!.reportCount}'),
+                      const SizedBox(height: AppTokens.space12),
+                      const Text('Symptoms Reported:',
+                          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13)),
+                      const SizedBox(height: AppTokens.space4),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 4,
+                        children: _selectedCluster!.symptoms.map((s) {
+                          return Chip(
+                            label: Text(s, style: const TextStyle(fontSize: 12)),
+                            backgroundColor: AppTokens.background,
+                          );
+                        }).toList(),
+                      ),
+                    ] else if (_selectedReport != null) ...[
+                      Text('Report ID: ${_selectedReport!.id}',
+                          style: Theme.of(context).textTheme.bodySmall),
+                      const SizedBox(height: AppTokens.space8),
+                      Text(
+                        'Officer View: Exact Coords: ${_selectedReport!.latitude}, ${_selectedReport!.longitude}',
+                        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                      ),
+                      const SizedBox(height: AppTokens.space8),
+                      Text('Reporter ID: ${_selectedReport!.userId ?? "Anonymous"}'),
+                      const SizedBox(height: AppTokens.space8),
+                      Text('Reporter Hash: ${_selectedReport!.reporterHash}'),
+                      const SizedBox(height: AppTokens.space8),
+                      Text('Time: ${_selectedReport!.createdAt}'),
+                      const SizedBox(height: AppTokens.space12),
+                      const Text('Symptoms:',
+                          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13)),
+                      const SizedBox(height: AppTokens.space4),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 4,
+                        children: _selectedReport!.symptoms.map((s) {
+                          return Chip(
+                            label: Text(s, style: const TextStyle(fontSize: 12)),
+                            backgroundColor: AppTokens.background,
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                    const Spacer(),
+                    const SizedBox(height: AppTokens.space16),
+                    DisclaimerText(language: lang),
+                  ],
+                ),
               ),
-            ],
-          ),
-          const Divider(),
-          const SizedBox(height: AppTokens.space12),
-          if (_selectedCluster != null) ...[
-            Text('Cluster ID: ${_selectedCluster!.id}',
-                style: Theme.of(context).textTheme.bodySmall),
-            const SizedBox(height: AppTokens.space8),
-            Text(
-              'Center: ${_selectedCluster!.centerLat}, ${_selectedCluster!.centerLng}',
-              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
             ),
-            const SizedBox(height: AppTokens.space8),
-            Text('Radius: ${_selectedCluster!.radiusKm} km'),
-            const SizedBox(height: AppTokens.space8),
-            Text('Independent reporting farms: ${_selectedCluster!.uniqueReporters}'),
-            const SizedBox(height: AppTokens.space8),
-            Text('Total reports in cluster: ${_selectedCluster!.reportCount}'),
-            const SizedBox(height: AppTokens.space12),
-            const Text('Symptoms Reported:',
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13)),
-            const SizedBox(height: AppTokens.space4),
-            Wrap(
-              spacing: 6,
-              runSpacing: 4,
-              children: _selectedCluster!.symptoms.map((s) {
-                return Chip(
-                  label: Text(s, style: const TextStyle(fontSize: 12)),
-                  backgroundColor: AppTokens.background,
-                );
-              }).toList(),
-            ),
-          ] else if (_selectedReport != null) ...[
-            Text('Report ID: ${_selectedReport!.id}',
-                style: Theme.of(context).textTheme.bodySmall),
-            const SizedBox(height: AppTokens.space8),
-            Text(
-              'Officer View: Exact Coords: ${_selectedReport!.latitude}, ${_selectedReport!.longitude}',
-              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-            ),
-            const SizedBox(height: AppTokens.space8),
-            Text('Reporter ID: ${_selectedReport!.userId ?? "Anonymous"}'),
-            const SizedBox(height: AppTokens.space8),
-            Text('Reporter Hash: ${_selectedReport!.reporterHash}'),
-            const SizedBox(height: AppTokens.space8),
-            Text('Time: ${_selectedReport!.createdAt}'),
-            const SizedBox(height: AppTokens.space12),
-            const Text('Symptoms:',
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13)),
-            const SizedBox(height: AppTokens.space4),
-            Wrap(
-              spacing: 6,
-              runSpacing: 4,
-              children: _selectedReport!.symptoms.map((s) {
-                return Chip(
-                  label: Text(s, style: const TextStyle(fontSize: 12)),
-                  backgroundColor: AppTokens.background,
-                );
-              }).toList(),
-            ),
-          ],
-          const Spacer(),
-          DisclaimerText(language: lang),
-        ],
+          );
+        },
       ),
     );
   }
