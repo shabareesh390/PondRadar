@@ -15,18 +15,14 @@ import 'services/notification_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load environment variables (.env with fallback to .env.example)
+  // Load environment variables from assets/.env (or template fallback)
   try {
     await dotenv.load(fileName: 'assets/.env');
   } catch (_) {
     try {
-      await dotenv.load(fileName: '.env');
-    } catch (_) {
-      try {
-        await dotenv.load(fileName: 'assets/.env.example');
-      } catch (e) {
-        debugPrint('.env loading notice: using built-in defaults: $e');
-      }
+      await dotenv.load(fileName: 'assets/.env.example');
+    } catch (e) {
+      debugPrint('Environment notice: using built-in defaults: $e');
     }
   }
 
