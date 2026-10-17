@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pondradar/config/theme.dart';
 import 'package:pondradar/features/auth/role_picker_screen.dart';
+import 'package:pondradar/features/officer/officer_dashboard_screen.dart';
 import 'package:pondradar/features/ponds/add_pond_screen.dart';
 import 'package:pondradar/features/ponds/farmer_home_screen.dart';
 import 'package:pondradar/features/reports/report_problem_screen.dart';
@@ -218,6 +219,70 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       expect(find.byType(AddPondScreen), findsOneWidget);
+    });
+
+    testWidgets(
+        'OfficerDashboardScreen renders full-width mobile layout with Drawer and NavigationBar on 360px width',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
+      final langNotifier = LanguageNotifier();
+      final authService = AuthService();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: MediaQuery(
+            data: const MediaQueryData(
+              size: Size(360, 640),
+            ),
+            child: OfficerDashboardScreen(
+              authService: authService,
+              firestoreService: FirestoreService(),
+              languageNotifier: langNotifier,
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(AppBar), findsOneWidget);
+    });
+
+    testWidgets(
+        'OfficerDashboardScreen renders multi-column desktop layout on 1024px width',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(1024, 768);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
+      final langNotifier = LanguageNotifier();
+      final authService = AuthService();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: MediaQuery(
+            data: const MediaQueryData(
+              size: Size(1024, 768),
+            ),
+            child: OfficerDashboardScreen(
+              authService: authService,
+              firestoreService: FirestoreService(),
+              languageNotifier: langNotifier,
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.byType(NavigationBar), findsNothing);
+      expect(find.byType(AppBar), findsNothing);
     });
   });
 }
