@@ -56,7 +56,15 @@
       }
 
       window.gm_authFailure = function() {
-        console.error('[PondRadar] Google Maps API Authentication Failure: The provided API key was rejected by Google. Ensure the Maps JavaScript API is enabled in your Google Cloud Console for key ' + (mapsKey ? mapsKey.substring(0, 8) + '...' : 'none'));
+        console.error(
+          '[PondRadar] Google Maps RefererNotAllowedMapError:\n' +
+          'Google Cloud is blocking requests from localhost for key ' + (mapsKey ? mapsKey.substring(0, 8) + '...' : '') + '.\n' +
+          'To fix:\n' +
+          '1. Open: https://console.cloud.google.com/google/maps-apis/credentials\n' +
+          '2. Click your API key.\n' +
+          '3. Under "Website restrictions", add: http://localhost:*/* and http://127.0.0.1:*/*\n' +
+          '4. Click Save.'
+        );
       };
 
       let loaded = false;
