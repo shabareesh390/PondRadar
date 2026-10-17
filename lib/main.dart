@@ -15,11 +15,19 @@ import 'services/notification_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load environment variables from .env
+  // Load environment variables (.env with fallback to .env.example)
   try {
-    await dotenv.load(fileName: '.env');
-  } catch (e) {
-    debugPrint('.env loading notice: $e');
+    await dotenv.load(fileName: 'assets/.env');
+  } catch (_) {
+    try {
+      await dotenv.load(fileName: '.env');
+    } catch (_) {
+      try {
+        await dotenv.load(fileName: 'assets/.env.example');
+      } catch (e) {
+        debugPrint('.env loading notice: using built-in defaults: $e');
+      }
+    }
   }
 
   // Initialize Firebase with auto-configured platform options

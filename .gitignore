@@ -47,5 +47,7 @@ app.*.map.json
 # Environment variables & secrets
 .env
 !.env.example
+assets/.env
+!assets/.env.example
 android/app/google-services.json
 !android/app/google-services.json.example

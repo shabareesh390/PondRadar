@@ -72,11 +72,11 @@ FIREBASE_IOS_API_KEY=YOUR_FIREBASE_IOS_API_KEY
 ```
 
 ### Setup Instructions
-1. Copy `.env.example` to `.env` (already present and pre-configured for demo):
+1. Copy `assets/.env.example` to `assets/.env`:
    ```bash
-   cp .env.example .env
+   cp assets/.env.example assets/.env
    ```
-2. Put your real keys into `.env`.
+2. Put your real keys into `assets/.env` (or root `.env`).
 3. If running Android or Web natively with Google Maps, place your Google Maps API key into:
    - **Android**: `android/app/src/main/AndroidManifest.xml` (`meta-data android:name="com.google.android.geo.API_KEY"`)
    - **Web**: `web/index.html` (`<script src="https://maps.googleapis.com/maps/api/js?key=..."></script>`)
