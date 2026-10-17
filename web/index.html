@@ -1,29 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="PondRadar Fisheries Officer Decision Support Dashboard">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="pondradar">
+  <meta name="apple-mobile-web-app-title" content="PondRadar">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
@@ -31,18 +18,72 @@
 
   <title>PondRadar - Officer Dashboard</title>
   <link rel="manifest" href="manifest.json">
-  <!-- Google Maps Web JS API placeholder. Replace with your actual key -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+
+  <!-- Dynamic Google Maps Loader: securely loads key from local assets/.env without committing secrets to git -->
+  <script>
+    (async function() {
+      let mapsKey = '';
+      const candidatePaths = [
+        'assets/assets/.env',
+        'assets/.env',
+        '/assets/assets/.env',
+        '/assets/.env'
+      ];
+
+      for (const p of candidatePaths) {
+        try {
+          const res = await fetch(p);
+          if (res.ok) {
+            const text = await res.text();
+            const match = text.match(/GOOGLE_MAPS_API_KEY=([^\r\n]+)/);
+            if (match && match[1] && !match[1].includes('YOUR_')) {
+              mapsKey = match[1].trim();
+              break;
+            }
+          }
+        } catch (_) {}
+      }
+
+      if (!mapsKey) {
+        const params = new URLSearchParams(window.location.search);
+        mapsKey = params.get('maps_key') || localStorage.getItem('google_maps_api_key') || window.GOOGLE_MAPS_API_KEY || '';
+      }
+
+      if (mapsKey) {
+        console.log('[PondRadar] Google Maps API key loaded successfully (' + mapsKey.substring(0, 8) + '...)');
+      } else {
+        console.warn('[PondRadar] No Google Maps API key found in assets/.env or URL query (?maps_key=KEY)');
+      }
+
+      window.gm_authFailure = function() {
+        console.error('[PondRadar] Google Maps API Authentication Failure: The provided API key was rejected by Google. Ensure the Maps JavaScript API is enabled in your Google Cloud Console for key ' + (mapsKey ? mapsKey.substring(0, 8) + '...' : 'none'));
+      };
+
+      let loaded = false;
+      function startFlutter() {
+        if (!loaded) {
+          loaded = true;
+          const fb = document.createElement('script');
+          fb.src = 'flutter_bootstrap.js';
+          fb.async = true;
+          document.body.appendChild(fb);
+        }
+      }
+
+      const script = document.createElement('script');
+      script.src = mapsKey
+        ? 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(mapsKey)
+        : 'https://maps.googleapis.com/maps/api/js';
+
+      script.onload = startFlutter;
+      script.onerror = startFlutter;
+      document.head.appendChild(script);
+
+      // Fallback timeout in case Maps network request hangs
+      setTimeout(startFlutter, 4000);
+    })();
+  </script>
 </head>
 <body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
-
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
-  <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

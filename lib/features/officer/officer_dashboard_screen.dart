@@ -412,76 +412,72 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
   Widget _buildTopFilterBar(AppLanguage lang, {bool isMobile = false}) {
     return Material(
       color: AppTokens.surface,
-      child: Padding(
+      child: Container(
+        width: double.infinity,
         padding: const EdgeInsets.symmetric(
           horizontal: AppTokens.space16,
           vertical: AppTokens.space8,
         ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            const Text(
-              'Time:',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 13,
-                color: AppTokens.textSecondary,
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    const Text(
+                      'Time:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 13,
+                        color: AppTokens.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: AppTokens.space8),
+                    DropdownButton<String>(
+                      value: _timeFilter,
+                      isDense: true,
+                      underline: const SizedBox(),
+                      items: const [
+                        DropdownMenuItem(value: '24h', child: Text('Last 24 hours')),
+                        DropdownMenuItem(value: '48h', child: Text('Last 48 hours')),
+                        DropdownMenuItem(value: '7d', child: Text('Last 7 days')),
+                        DropdownMenuItem(value: 'all', child: Text('All time')),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) setState(() => _timeFilter = val);
+                      },
+                    ),
+                    const SizedBox(width: AppTokens.space16),
+                    const Text(
+                      'Symptom:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 13,
+                        color: AppTokens.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: AppTokens.space8),
+                    DropdownButton<String>(
+                      value: _symptomFilter,
+                      isDense: true,
+                      underline: const SizedBox(),
+                      items: const [
+                        DropdownMenuItem(value: 'all', child: Text('All symptoms')),
+                        DropdownMenuItem(value: 'white_spots', child: Text('White spots')),
+                        DropdownMenuItem(value: 'lethargy', child: Text('Lethargy')),
+                        DropdownMenuItem(value: 'surface_gasping', child: Text('Surface gasping')),
+                        DropdownMenuItem(value: 'discoloured_water', child: Text('Discoloured water')),
+                        DropdownMenuItem(value: 'sudden_deaths', child: Text('Sudden deaths')),
+                        DropdownMenuItem(value: 'reduced_feeding', child: Text('Reduced feeding')),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) setState(() => _symptomFilter = val);
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(width: AppTokens.space8),
-            DropdownButton<String>(
-              value: _timeFilter,
-              isDense: true,
-              underline: const SizedBox(),
-              items: const [
-                DropdownMenuItem(value: '24h', child: Text('24h')),
-                DropdownMenuItem(value: '48h', child: Text('48h')),
-                DropdownMenuItem(value: '7d', child: Text('7d')),
-                DropdownMenuItem(value: 'all', child: Text('All time')),
-              ],
-              onChanged: (val) {
-                if (val != null) setState(() => _timeFilter = val);
-              },
-            ),
-            const SizedBox(width: AppTokens.space16),
-            const Text(
-              'Symptom:',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 13,
-                color: AppTokens.textSecondary,
-              ),
-            ),
-            const SizedBox(width: AppTokens.space8),
-            DropdownButton<String>(
-              value: _symptomFilter,
-              isDense: true,
-              underline: const SizedBox(),
-              items: const [
-                DropdownMenuItem(value: 'all', child: Text('All symptoms')),
-                DropdownMenuItem(value: 'white_spots', child: Text('White spots')),
-                DropdownMenuItem(value: 'lethargy', child: Text('Lethargy')),
-                DropdownMenuItem(
-                  value: 'surface_gasping',
-                  child: Text('Surface gasping'),
-                ),
-                DropdownMenuItem(
-                  value: 'discoloured_water',
-                  child: Text('Discoloured water'),
-                ),
-                DropdownMenuItem(
-                  value: 'sudden_deaths',
-                  child: Text('Sudden deaths'),
-                ),
-                DropdownMenuItem(
-                  value: 'reduced_feeding',
-                  child: Text('Reduced feeding'),
-                ),
-              ],
-              onChanged: (val) {
-                if (val != null) setState(() => _symptomFilter = val);
-              },
             ),
             if (!isMobile) ...[
               const SizedBox(width: AppTokens.space16),
@@ -490,7 +486,6 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
           ],
         ),
       ),
-    ),
     );
   }
 

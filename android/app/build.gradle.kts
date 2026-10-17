@@ -7,6 +7,16 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+import java.util.Properties
+import java.io.FileInputStream
+
+val envProps = Properties()
+val envFile = File(project.rootDir.parentFile, "assets/.env")
+if (envFile.exists()) {
+    envProps.load(FileInputStream(envFile))
+}
+val mapsApiKey: String = envProps.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
+
 android {
     namespace = "com.example.pondradar"
     compileSdk = flutter.compileSdkVersion
@@ -25,6 +35,7 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true
+        manifestPlaceholders["mapsApiKey"] = mapsApiKey
     }
 
     buildTypes {

@@ -280,7 +280,11 @@ void main() {
       );
 
       await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull);
+      final err = tester.takeException();
+      if (err is FlutterError) {
+        debugPrint('OVERFLOW DETAILS: ${err.toStringDeep()}');
+      }
+      expect(err, isNull);
       expect(find.byType(NavigationBar), findsNothing);
       expect(find.byType(AppBar), findsNothing);
     });
