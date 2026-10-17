@@ -1,0 +1,20 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "reports_public",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isSimulated", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "water_readings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "evaluatedAt", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
