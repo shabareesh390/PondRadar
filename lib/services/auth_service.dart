@@ -46,7 +46,7 @@ class AuthService extends ChangeNotifier {
         await prefs.setString(_cachedUidKey, _userId!);
       }
     } catch (e) {
-      // In offline mode or prior to network connection, keep fallback ID
+      // Keep fallback ID when offline or waiting for network
       debugPrint('Anonymous auth warning: $e, using cached ID $_userId');
     }
 

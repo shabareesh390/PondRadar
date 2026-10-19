@@ -13,23 +13,23 @@ class GeminiPhotoTriageResult {
   });
 }
 
-/// Optional AI Service (behind feature flag [AppConfig.enableGemini], default OFF).
-/// When flag is OFF, instantly provides curated, verified Kannada templates and fallback notes.
+/// Advisory triage service (behind feature flag [AppConfig.enableGemini], default OFF).
+/// Uses pre-written, expert-curated Kannada/English templates by default.
 class GeminiService {
-  /// Gemini API Key loaded dynamically from .env
+  /// Gemini API key from environment.
   static String get geminiApiKey => AppConfig.geminiApiKey;
 
-  /// Suggests triage observation from pond symptoms or image
+  /// Returns triage guidance from observed symptoms or photos.
   static Future<GeminiPhotoTriageResult> triageSymptoms(
     List<String> symptoms,
   ) async {
     if (!AppConfig.enableGemini) {
-      // Offline / Feature-flag OFF: return deterministic expert-curated template
+      // Use local expert template when AI flag is disabled
       return _getCuratedFallback(symptoms);
     }
 
     try {
-      // When enabled with an actual API key, can call Google Gemini API
+      // Live Gemini vision/text API call can be plugged in here when enabled
       return _getCuratedFallback(symptoms);
     } catch (e) {
       debugPrint('Gemini triage fallback: $e');
@@ -37,14 +37,14 @@ class GeminiService {
     }
   }
 
-  /// Kannada alert message wording generator (fallback template)
+  /// Formats a localized Kannada alert banner for farmer notifications.
   static String formatKannadaAlert({
     required String pondName,
     required double distanceKm,
     required int reportCount,
     required List<String> symptoms,
   }) {
-    // Verified template fallback for Kannada alerts
+    // Template fallback for Kannada alerts
     final symptomListStr = symptoms.map((s) => _kannadaSymptom(s)).join(', ');
     return 'ಎಚ್ಚರಿಕೆ: ನಿಮ್ಮ "$pondName" ಕೊಳದಿಂದ ${distanceKm.toStringAsFixed(1)} ಕಿ.ಮೀ ದೂರದಲ್ಲಿ ರೋಗ ಲಕ್ಷಣಗಳ ಕ್ಲಸ್ಟರ್ ಪತ್ತೆಯಾಗಿದೆ ($reportCount ರೈತರು $symptomListStr ವರದಿ ಮಾಡಿದ್ದಾರೆ). ಮುನ್ನೆಚ್ಚರಿಕೆ ವಹಿಸಿ.';
   }

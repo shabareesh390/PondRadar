@@ -1,8 +1,8 @@
 import '../../config/thresholds.dart';
 
-/// Pure, client-side Risk Engine for Aquaculture Water Quality.
-/// Evaluates pH, Dissolved Oxygen, Ammonia, and Temperature against
-/// defined thresholds and determines worst-case overall risk level.
+/// Aquaculture water quality risk evaluation engine.
+/// Evaluates pH, dissolved oxygen, ammonia, and temperature against
+/// thresholds and determines worst-case overall risk level.
 class RiskEngine {
   /// Evaluates water parameters and returns structured risk evaluation.
   static WaterRiskEvaluation evaluate({
@@ -18,7 +18,7 @@ class RiskEngine {
 
     final results = [phResult, doResult, ammoniaResult, tempResult];
 
-    // Overall risk = worst parameter
+    // Overall severity defaults to the highest individual parameter risk
     var worst = WaterRiskLevel.low;
     for (final r in results) {
       if (r.risk.severity > worst.severity) {
@@ -191,7 +191,7 @@ class RiskEngine {
       };
     }
 
-    // High risk specific actions
+    // Prioritized corrective advice based on critical parameter failures
     final highParams =
         results.where((r) => r.risk == WaterRiskLevel.high).map((r) => r.key).toSet();
 
@@ -231,7 +231,7 @@ class RiskEngine {
       };
     }
 
-    // Medium risk actions
+    // General caution guidance for borderline parameters
     return {
       'en':
           'Caution: One or more parameters require attention. Monitor aerators and retest in 6 hours.',

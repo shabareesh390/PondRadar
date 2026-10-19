@@ -26,14 +26,13 @@ class OutbreakAlert {
     this.isSimulated = false,
   });
 
-  /// Deterministic alert ID based on 1km grid cell and date.
-  /// Guarantees idempotency with set-with-merge so duplicate alerts never occur.
+  /// Deterministic alert key based on date and ~1km grid bucket to keep writes idempotent.
   static String generateDeterministicId(
     double lat,
     double lng,
     DateTime date,
   ) {
-    // Snap to ~1km grid
+    // 2 decimal places is roughly ~1.1km grid precision
     final gridLat = (lat * 100).round() / 100.0;
     final gridLng = (lng * 100).round() / 100.0;
     final dateStr =

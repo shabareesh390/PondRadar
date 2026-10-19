@@ -4,10 +4,10 @@ import '../../config/config.dart';
 import '../../services/location_service.dart';
 
 class ClusteringEngine {
-  /// Evaluates reports and identifies outbreak clusters meeting criteria:
-  /// - Within [AppConfig.clusterTimeWindowHours] (48h)
-  /// - Within [AppConfig.clusterRadiusKm] (3 km)
-  /// - At least [AppConfig.minIndependentReporters] distinct reporters
+  /// Evaluates symptom reports and identifies outbreak clusters meeting criteria:
+  /// - Time window: within [AppConfig.clusterTimeWindowHours] (48h)
+  /// - Spatial radius: within [AppConfig.clusterRadiusKm] (3 km)
+  /// - Minimum independent reporters: at least [AppConfig.minIndependentReporters] distinct farmers
   static List<OutbreakAlert> findClusters(
     List<SymptomReport> reports, {
     DateTime? referenceTime,
@@ -16,7 +16,7 @@ class ClusteringEngine {
     final cutoff =
         now.subtract(const Duration(hours: AppConfig.clusterTimeWindowHours));
 
-    // 1. Filter reports within the 48h time window
+    // 1. Drop reports older than the active time window
     final recentReports =
         reports.where((r) => r.createdAt.isAfter(cutoff)).toList();
 
@@ -26,7 +26,7 @@ class ClusteringEngine {
 
     final Map<String, OutbreakAlert> candidateAlerts = {};
 
-    // 2. Cluster around each report as an anchor
+    // 2. Test each report as a potential cluster anchor
     for (final anchor in recentReports) {
       final List<SymptomReport> neighbors = [];
 
@@ -43,12 +43,12 @@ class ClusteringEngine {
         }
       }
 
-      // Check distinct reporters
+      // Must have reports from separate farmers (not multiple submissions from one person)
       final uniqueReporters =
           neighbors.map((r) => r.reporterHash).toSet().length;
 
       if (uniqueReporters >= AppConfig.minIndependentReporters) {
-        // Calculate cluster center
+        // Centroid of all neighboring points
         double sumLat = 0.0;
         double sumLng = 0.0;
         final Set<String> symptomSet = {};
@@ -64,7 +64,7 @@ class ClusteringEngine {
         final double centerLat = sumLat / neighbors.length;
         final double centerLng = sumLng / neighbors.length;
 
-        // Generate deterministic ID using center grid + date
+        // Bucket by day and ~1km grid cell to deduplicate candidate alerts
         final alertId = OutbreakAlert.generateDeterministicId(
           centerLat,
           centerLng,
@@ -74,7 +74,7 @@ class ClusteringEngine {
         final dateStr =
             '${now.year.toString().padLeft(4, '0')}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 
-        // Candidate alert (if existing, update with max counts)
+        // Keep the largest cluster candidate for this grid cell
         if (!candidateAlerts.containsKey(alertId) ||
             candidateAlerts[alertId]!.reportCount < neighbors.length) {
           candidateAlerts[alertId] = OutbreakAlert(

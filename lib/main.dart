@@ -15,7 +15,7 @@ import 'services/notification_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load environment variables from assets/.env (or template fallback)
+  // Load environment variables (.env with .env.example fallback)
   try {
     await dotenv.load(fileName: 'assets/.env');
   } catch (_) {
@@ -26,7 +26,7 @@ void main() async {
     }
   }
 
-  // Initialize Firebase with auto-configured platform options
+  // Initialize Firebase for current platform
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -35,7 +35,7 @@ void main() async {
     debugPrint('Firebase initialization notice: $e');
   }
 
-  // Initialize notification service
+  // Initialize local push notifications
   await NotificationService().initialize();
 
   runApp(const PondRadarApp());
@@ -97,7 +97,7 @@ class _PondRadarAppState extends State<PondRadarApp> {
                 );
               }
 
-              // Web direct officer route handling
+              // Support direct URL navigation on web (e.g. /#/officer or /officer)
               if (kIsWeb && Uri.base.path.contains('/officer')) {
                 return OfficerDashboardScreen(
                   authService: _authService,

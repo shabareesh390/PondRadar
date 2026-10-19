@@ -109,7 +109,6 @@ class _AddPondScreenState extends State<AddPondScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Pond Name Input
                 Text(
                   AppStrings.get('pondName', lang),
                   style: Theme.of(context).textTheme.bodySmall,
@@ -129,7 +128,6 @@ class _AddPondScreenState extends State<AddPondScreen> {
                 ),
                 const SizedBox(height: AppTokens.space16),
 
-                // Species Selector
                 Text(
                   AppStrings.get('species', lang),
                   style: Theme.of(context).textTheme.bodySmall,
@@ -154,7 +152,6 @@ class _AddPondScreenState extends State<AddPondScreen> {
                 ),
                 const SizedBox(height: AppTokens.space16),
 
-                // Location Header & GPS button
                 Row(
                   children: [
                     Expanded(
@@ -226,7 +223,6 @@ class _AddPondScreenState extends State<AddPondScreen> {
                 ),
                 const SizedBox(height: AppTokens.space32),
 
-                // Primary Save Button
                 ElevatedButton(
                   onPressed: _isSaving ? null : _savePond,
                   child: _isSaving

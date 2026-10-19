@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// App color and spacing design tokens for PondRadar.
-/// Adheres strictly to the UI design brief:
-/// - Light theme only
-/// - Flat, no gradients, no heavy shadows
-/// - Curated palette: Deep Teal #0F6E56, White surface, #F7F8F7 background
+/// Design tokens: colors, spacing, and sizing rules.
+/// Kept flat with high contrast for outdoor visibility in sunlight.
 class AppTokens {
   // Brand & neutral colors
   static const Color primary = Color(0xFF0F6E56);
@@ -15,7 +12,7 @@ class AppTokens {
   static const Color textPrimary = Color(0xFF1B1F1D);
   static const Color textSecondary = Color(0xFF5B6360);
 
-  // Risk colors - always paired with an icon and label
+  // Risk levels - always paired with an icon and label
   static const Color riskLow = Color(0xFF2E7D32);
   static const Color riskMedium = Color(0xFFB26A00);
   static const Color riskHigh = Color(0xFFC62828);
@@ -29,7 +26,7 @@ class AppTokens {
   static const double space24 = 24.0;
   static const double space32 = 32.0;
 
-  // Sizing & Radii
+  // Sizing & tap targets
   static const double cardRadius = 12.0;
   static const double controlRadius = 8.0;
   static const double buttonHeight = 52.0;
@@ -53,7 +50,7 @@ class AppTheme {
         surface: AppTokens.surface,
         onSurface: AppTokens.textPrimary,
       ),
-      fontFamily: 'Roboto', // Default fallback font family
+      fontFamily: 'Roboto',
       textTheme: const TextTheme(
         titleLarge: TextStyle(
           fontSize: 20,

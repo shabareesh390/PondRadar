@@ -76,13 +76,13 @@ class FirestoreService {
     required WaterRiskEvaluation evaluation,
   }) async {
     if (_firestore == null) return;
-    // 1. Update the pond doc's summary
+    // 1. Update latest evaluation summary on the pond
     await _firestore!.collection('ponds').doc(pondId).update({
       'lastRisk': evaluation.overallRisk.name,
       'lastEvaluation': evaluation.toMap(),
     });
 
-    // 2. Add to history subcollection for trend tracking
+    // 2. Save historical reading for trend analysis
     await _firestore!
         .collection('ponds')
         .doc(pondId)
@@ -107,10 +107,8 @@ class FirestoreService {
 
   // ===================== SYMPTOM REPORTS =====================
 
-  /// Submits symptom report with Privacy-by-Design:
-  /// - `reports_public`: Snapped to 500m grid, no raw userId (salted pseudonym)
-  /// - `reports_private`: Exact coordinates, raw userId (officer-only access)
-  /// - Automatically executes client-side clustering and writes deterministic alerts.
+  /// Submits a symptom report.
+  /// Writes a fuzzed public copy for clustering and an exact private copy for officer verification.
   Future<void> submitSymptomReport({
     required String userId,
     String? pondId,
@@ -129,7 +127,7 @@ class FirestoreService {
 
     if (_firestore == null) return;
 
-    // 1. Write public report
+    // 1. Write public report (500m snapped, salted reporter hash)
     final publicDocRef = _firestore!.collection('reports_public').doc();
     final publicData = {
       'reporterHash': reporterHash,
@@ -142,7 +140,7 @@ class FirestoreService {
     };
     await publicDocRef.set(publicData);
 
-    // 2. Write private report (same doc ID for traceable linkage by officers)
+    // 2. Write private report (same doc ID for direct officer lookup)
     final privateData = {
       'userId': userId,
       'pondId': pondId,
@@ -159,11 +157,11 @@ class FirestoreService {
         .doc(publicDocRef.id)
         .set(privateData);
 
-    // 3. Client-side deterministic clustering check
+    // 3. Evaluate clustering client-side
     await _evaluateAndWriteAlerts();
   }
 
-  /// Runs deterministic clustering over recent public reports and writes alerts
+  /// Runs clustering over recent public reports and persists alerts.
   Future<void> _evaluateAndWriteAlerts() async {
     if (_firestore == null) return;
     try {
@@ -181,7 +179,7 @@ class FirestoreService {
       final clusters = ClusteringEngine.findClusters(publicReports);
 
       for (final cluster in clusters) {
-        // Write using deterministic ID with set-merge to avoid duplicates
+        // Use deterministic ID with set-merge to avoid duplicate cluster docs
         await _firestore!
             .collection('alerts')
             .doc(cluster.id)
@@ -235,7 +233,7 @@ class FirestoreService {
 
   // ===================== DEMO & SIMULATION =====================
 
-  /// Stream to detect if simulated demo data is present
+  /// Checks whether simulated demo reports currently exist.
   Stream<bool> hasSimulatedDataStream() {
     if (_firestore == null) return Stream.value(false);
     return _firestore!
@@ -246,7 +244,7 @@ class FirestoreService {
         .map((snap) => snap.docs.isNotEmpty);
   }
 
-  /// Creates ~40 simulated reports across coastal Karnataka clusters
+  /// Seeds ~40 realistic demo reports across coastal Karnataka aquaculture hubs.
   Future<void> loadDemoData(String currentUserId) async {
     final now = DateTime.now();
 
@@ -332,7 +330,7 @@ class FirestoreService {
       }
     }
 
-    // Also add a sample pond for the current user if they don't have one
+    // Sample pond with borderline readings for testing UI alerts
     final samplePondRef = _firestore!.collection('ponds').doc('demo_pond_udupi');
     batch.set(samplePondRef, {
       'userId': currentUserId,
@@ -387,12 +385,10 @@ class FirestoreService {
     });
 
     await batch.commit();
-
-    // Trigger clustering
     await _evaluateAndWriteAlerts();
   }
 
-  /// Live outbreak simulation: adds 3 reports from distinct users near a specific coordinate
+  /// Simulates an active outbreak by generating 3 reports close together.
   Future<void> simulateOutbreak({
     required double nearLat,
     required double nearLng,
@@ -442,7 +438,7 @@ class FirestoreService {
     await _evaluateAndWriteAlerts();
   }
 
-  /// Clears all demo data
+  /// Clears all simulated demo reports, alerts, and demo ponds.
   Future<void> clearDemoData() async {
     if (_firestore == null) return;
     final batch = _firestore!.batch();
@@ -464,7 +460,7 @@ class FirestoreService {
       batch.delete(doc.reference);
     }
 
-    // Delete demo pond if exists
+    // Clean up demo pond if present
     final demoPondRef = _firestore!.collection('ponds').doc('demo_pond_udupi');
     batch.delete(demoPondRef);
 

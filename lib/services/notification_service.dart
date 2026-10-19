@@ -29,7 +29,7 @@ class NotificationService {
 
       await _plugin.initialize(settings: initSettings);
 
-      // Request notification permission for Android 13+
+      // Android 13+ runtime notification permission request
       final androidPlatform = _plugin.resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>();
       if (androidPlatform != null) {

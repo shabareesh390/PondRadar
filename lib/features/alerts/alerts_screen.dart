@@ -33,7 +33,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
     for (final alert in alerts) {
       if (_notifiedAlertIds.contains(alert.id)) continue;
 
-      // Find nearest pond
+      // Find the closest pond to this alert
       double minDistance = double.infinity;
       String nearestPondName = widget.ponds.first.name;
 
@@ -50,7 +50,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
         }
       }
 
-      // If cluster is within 15km of any pond, trigger notification
+      // Notify if an active outbreak is within 15km of any of the user's ponds
       if (minDistance <= 15.0) {
         _notifiedAlertIds.add(alert.id);
         NotificationService().showOutbreakAlert(
@@ -87,7 +87,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
 
             final allAlerts = snapshot.data ?? [];
 
-            // Trigger local notification for any new alert near ponds
+            // Dispatch notifications for any newly discovered alerts
             WidgetsBinding.instance.addPostFrameCallback((_) {
               _checkAndNotifyNewAlerts(allAlerts);
             });

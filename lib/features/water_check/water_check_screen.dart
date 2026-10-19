@@ -254,7 +254,6 @@ class _WaterCheckScreenState extends State<WaterCheckScreen> {
                             ],
                             const SizedBox(height: AppTokens.space24),
 
-                            // Evaluate Button
                             ElevatedButton(
                               onPressed: _isSaving ? null : _evaluate,
                               child: _isSaving
@@ -274,7 +273,7 @@ class _WaterCheckScreenState extends State<WaterCheckScreen> {
                     ),
                   ),
 
-              // Risk Assessment Result Card
+              // Risk assessment result card
               if (_currentEvaluation != null) ...[
                 const SizedBox(height: AppTokens.space24),
                 Card(
@@ -303,7 +302,7 @@ class _WaterCheckScreenState extends State<WaterCheckScreen> {
                         const Divider(),
                         const SizedBox(height: AppTokens.space12),
 
-                        // Reasons per parameter
+                        // Specific evaluation notes for each parameter
                         ..._currentEvaluation!.parameterResults.map((param) {
                           final reason =
                               lang == AppLanguage.kn ? param.reasonKn : param.reasonEn;
@@ -333,7 +332,6 @@ class _WaterCheckScreenState extends State<WaterCheckScreen> {
                         const Divider(),
                         const SizedBox(height: AppTokens.space12),
 
-                        // Action Note
                         Text(
                           AppStrings.get('actionRequired', lang),
                           style: const TextStyle(
@@ -359,7 +357,7 @@ class _WaterCheckScreenState extends State<WaterCheckScreen> {
                 ),
               ],
 
-              // Previous Readings History
+              // Recent water test history for this pond
               const SizedBox(height: AppTokens.space24),
               Text(
                 AppStrings.get('trendHistory', lang),

@@ -3,6 +3,7 @@ import '../config/theme.dart';
 import '../config/thresholds.dart';
 import '../l10n/translations.dart';
 
+/// Color-coded badge displaying water risk level with accompanying icon and label.
 class RiskBadge extends StatelessWidget {
   final WaterRiskLevel risk;
   final AppLanguage language;

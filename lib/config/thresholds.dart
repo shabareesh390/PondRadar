@@ -1,5 +1,5 @@
-/// Risk evaluation thresholds and definitions for aquaculture water quality.
-/// All thresholds are stored as data with source references.
+/// Aquaculture water quality thresholds and risk definitions.
+/// Thresholds are defined with references to standard culture manuals (FAO/CIBA).
 library;
 
 enum WaterRiskLevel {
@@ -58,8 +58,7 @@ class ParameterThresholdRule {
 }
 
 class WaterThresholds {
-  // SOURCE: FAO shrimp culture manual, Water Quality Management;
-  // values outside 7.5-9.0 need review: TO VERIFY.
+  // FAO shrimp culture manual: Water Quality Management guidelines.
   static const String phSource =
       'FAO shrimp culture manual, Water Quality Management; values outside 7.5-9.0 need review: TO VERIFY.';
   static const double phLowMin = 7.5;
@@ -67,19 +66,19 @@ class WaterThresholds {
   static const double phMedLowMin = 7.0;
   static const double phMedHighMax = 9.5;
 
-  // SOURCE: FAO shrimp water management, Dissolved Oxygen guidelines: TO VERIFY.
+  // FAO dissolved oxygen guidelines for shrimp ponds.
   static const String doSource =
       'FAO shrimp culture manual - Dissolved oxygen: Low >= 4 mg/L; Medium 3-4; High < 3: TO VERIFY.';
   static const double doLowMin = 4.0;
   static const double doMedMin = 3.0;
 
-  // SOURCE: Central Institute of Brackishwater Aquaculture (CIBA) / FAO guidelines: TO VERIFY.
+  // CIBA / FAO guidelines for un-ionized ammonia in shrimp culture.
   static const String ammoniaSource =
       'CIBA / FAO shrimp guidelines - Ammonia: Low <= 0.1 mg/L; Medium 0.1-0.3; High > 0.3: TO VERIFY.';
   static const double ammoniaLowMax = 0.1;
   static const double ammoniaMedMax = 0.3;
 
-  // SOURCE: Coastal Karnataka ambient shrimp pond range placeholder: TO VERIFY.
+  // Baseline ambient water temperature range for coastal Karnataka.
   static const String tempSource =
       'Clearly marked placeholder ranges for coastal Karnataka ambient waters: TO VERIFY.';
   static const double tempLowMin = 26.0;

@@ -99,7 +99,7 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
     });
 
     try {
-      // Determine coordinates from selected pond or current GPS
+      // Use selected pond location, or fall back to current device GPS
       double exactLat = AppConfig.defaultLat;
       double exactLng = AppConfig.defaultLng;
 
@@ -163,7 +163,6 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Pond Selection (if multiple ponds)
                   if (widget.ponds.isNotEmpty) ...[
                     Text(
                       AppStrings.get('pondName', lang),
@@ -184,14 +183,13 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
                     const SizedBox(height: AppTokens.space16),
                   ],
 
-                  // Symptom Grid Header
                   Text(
                     AppStrings.get('selectSymptoms', lang),
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: AppTokens.space12),
 
-                  // Responsive symptom picker grid
+                  // Symptom picker grid with responsive columns
                   LayoutBuilder(
                     builder: (context, constraints) {
                       final isWide = constraints.maxWidth >= 480;
@@ -302,7 +300,6 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
 
               const SizedBox(height: AppTokens.space24),
 
-              // Single Full-Width Submit Button (52px high)
               ElevatedButton(
                 onPressed: _isSubmitting ? null : _submitReport,
                 child: _isSubmitting

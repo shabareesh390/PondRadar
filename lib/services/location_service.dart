@@ -16,7 +16,7 @@ class LocationResult {
 }
 
 class LocationService {
-  /// Request device location with fallback to coastal Karnataka aquaculture hub
+  /// Requests current device GPS coordinates with fallback to coastal Karnataka center.
   static Future<LocationResult> getCurrentLocation() async {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -70,8 +70,7 @@ class LocationService {
     }
   }
 
-  /// Blurs exact coordinates to a ~500m grid center for privacy.
-  /// Used for public reports so farm location is never disclosed.
+  /// Snaps exact coordinates to a ~500m grid to protect farmer privacy in public cluster views.
   static Map<String, double> blurCoordinatesTo500m(
     double latitude,
     double longitude,
@@ -80,7 +79,7 @@ class LocationService {
     final double latStep =
         AppConfig.publicLocationBlurGridMeters / metersPerDegreeLat;
 
-    // Convert lat to radians for longitude scaling
+    // Scale longitude step based on latitude
     final double radLat = latitude * (math.pi / 180.0);
     final double metersPerDegreeLng =
         metersPerDegreeLat * math.cos(radLat).abs();
@@ -98,7 +97,7 @@ class LocationService {
     };
   }
 
-  /// Calculates the Haversine distance in kilometers between two coordinates.
+  /// Calculates Haversine distance between two coordinates in kilometers.
   static double haversineDistanceKm(
     double lat1,
     double lon1,

@@ -60,7 +60,7 @@ class FarmerHomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Two Main Action Buttons (Responsive row on web/desktop)
+                  // Action buttons: stacked on mobile, side-by-side on wide screens
                   LayoutBuilder(
                     builder: (context, constraints) {
                       final isWide = constraints.maxWidth > 500;
@@ -131,7 +131,7 @@ class FarmerHomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: AppTokens.space24),
 
-              // My Ponds Section
+              // Registered ponds
               Row(
                 children: [
                   Expanded(

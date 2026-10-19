@@ -87,7 +87,7 @@ class _RolePickerScreenState extends State<RolePickerScreen> {
                       ),
                       const SizedBox(height: AppTokens.space24),
 
-                      // Farmer Card
+                      // Option 1: Farmer role (direct access without credentials)
                       Card(
                         child: InkWell(
                           borderRadius: BorderRadius.circular(AppTokens.cardRadius),
@@ -130,7 +130,7 @@ class _RolePickerScreenState extends State<RolePickerScreen> {
                       ),
                       const SizedBox(height: AppTokens.space12),
 
-                      // Officer Card
+                      // Option 2: Fisheries officer role (protected by PIN)
                       Card(
                         child: InkWell(
                           borderRadius: BorderRadius.circular(AppTokens.cardRadius),

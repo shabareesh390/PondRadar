@@ -55,7 +55,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
 
   Future<void> _simulateOutbreak() async {
     setState(() => _isLoadingDemo = true);
-    // Simulate near Udupi Aquaculture pond
+    // Simulate an outbreak near Udupi Aquaculture pond
     await widget.firestoreService.simulateOutbreak(
       nearLat: 13.345,
       nearLng: 74.715,
@@ -91,7 +91,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
   List<SymptomReport> _filterReports(List<SymptomReport> reports) {
     final now = DateTime.now();
     return reports.where((r) {
-      // Time filter
+      // Filter by time window
       if (_timeFilter == '24h' &&
           r.createdAt.isBefore(now.subtract(const Duration(hours: 24)))) {
         return false;
@@ -105,7 +105,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
         return false;
       }
 
-      // Symptom filter
+      // Filter by symptom tag
       if (_symptomFilter != 'all' && !r.symptoms.contains(_symptomFilter)) {
         return false;
       }
@@ -225,7 +225,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                       );
                     }
 
-                    // Desktop / Wide Screen Layout (width >= 800)
+                    // Desktop layout (split navigation, map, and inspection panel)
                     return Scaffold(
                       body: Column(
                         children: [
@@ -233,14 +233,14 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                           Expanded(
                             child: Row(
                               children: [
-                                // 1. Left Sidebar (Fixed 250px)
+                                // 1. Left navigation sidebar
                                 _buildLeftSidebar(context, lang, isDrawer: false),
 
                                 const VerticalDivider(width: 1),
 
-                                // 2. Main Center Content (Takes 100% of remaining width)
+                                // 2. Main center workspace (map, reports, or clusters)
                                 Expanded(
-                                  child: Column(
+                                   child: Column(
                                     children: [
                                       _buildTopFilterBar(lang, isMobile: false),
                                       const Divider(height: 1),
@@ -255,7 +255,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                                   ),
                                 ),
 
-                                // 3. Right Detail Panel (if selected)
+                                // 3. Right detail panel (if report or cluster selected)
                                 if (_selectedCluster != null ||
                                     _selectedReport != null) ...[
                                   const VerticalDivider(width: 1),
@@ -507,7 +507,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
     List<SymptomReport> reports,
     List<OutbreakAlert> alerts,
   ) {
-    // Generate Google Map markers for reports
+    // Individual farm report markers
     final Set<Marker> markers = {};
     for (final r in reports) {
       markers.add(
@@ -532,14 +532,14 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
       );
     }
 
-    // Generate cluster circles
+    // Outbreak cluster circles (3 km radius)
     final Set<Circle> circles = {};
     for (final a in alerts) {
       circles.add(
         Circle(
           circleId: CircleId(a.id),
           center: LatLng(a.centerLat, a.centerLng),
-          radius: a.radiusKm * 1000, // 3000m
+          radius: a.radiusKm * 1000,
           fillColor: AppTokens.riskHigh.withValues(alpha: 0.15),
           strokeColor: AppTokens.riskHigh,
           strokeWidth: 2,
@@ -619,7 +619,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
           zoomControlsEnabled: true,
         ),
 
-        // Map Legend (top right so it does not overlap bottom sheets)
+        // Legend positioned at top-right to avoid overlapping bottom sheets
         Positioned(
           top: AppTokens.space12,
           right: AppTokens.space12,

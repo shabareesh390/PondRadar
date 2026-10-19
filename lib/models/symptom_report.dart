@@ -3,8 +3,8 @@ import 'package:crypto/crypto.dart';
 
 class SymptomReport {
   final String id;
-  final String? userId; // Present in private report, null in public report
-  final String reporterHash; // Salted pseudonym in public report
+  final String? userId; // Present in private report, omitted from public cluster views
+  final String reporterHash; // Salted pseudonym used for public cluster analysis
   final String? pondId;
   final List<String> symptoms;
   final String? photoBase64OrUrl;
@@ -26,7 +26,7 @@ class SymptomReport {
     this.isSimulated = false,
   });
 
-  /// Generate a deterministic anonymous hash from user ID for privacy
+  /// Generates a salted pseudonym so reports can be clustered without exposing farmer identity.
   static String hashUserId(String userId) {
     const salt = 'pondradar_salt_udupi_2026';
     final bytes = utf8.encode('$userId:$salt');
@@ -34,7 +34,7 @@ class SymptomReport {
     return digest.toString().substring(0, 16);
   }
 
-  /// Data stored in public collection: blurred coordinates, no raw userId
+  /// Sanitized payload for public cluster feeds (fuzzed location, anonymized reporter).
   Map<String, dynamic> toPublicMap() {
     return {
       'reporterHash': reporterHash,
@@ -47,7 +47,7 @@ class SymptomReport {
     };
   }
 
-  /// Data stored in private collection: exact coordinates, raw userId
+  /// Full payload for the farmer's private record (exact GPS and actual user ID).
   Map<String, dynamic> toPrivateMap({
     required double exactLat,
     required double exactLng,

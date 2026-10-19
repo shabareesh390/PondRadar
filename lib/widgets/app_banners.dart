@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../config/theme.dart';
 import '../l10n/translations.dart';
 
-/// Thin neutral strip at the top indicating simulated demo data is present
+/// Top banner displayed when simulated demo data is active.
 class SimulatedDataBanner extends StatelessWidget {
   final AppLanguage language;
 
@@ -32,7 +32,7 @@ class SimulatedDataBanner extends StatelessWidget {
   }
 }
 
-/// Offline indicator banner
+/// Banner shown when device is offline.
 class OfflineBanner extends StatelessWidget {
   final AppLanguage language;
 
@@ -72,7 +72,7 @@ class OfflineBanner extends StatelessWidget {
   }
 }
 
-/// Decision-support disclaimer shown at the bottom of result and report screens
+/// Advisory disclaimer shown on evaluation and report screens.
 class DisclaimerText extends StatelessWidget {
   final AppLanguage language;
 
@@ -97,7 +97,7 @@ class DisclaimerText extends StatelessWidget {
   }
 }
 
-/// Compact button to switch between English and Kannada
+/// Compact toggle button to switch between English and Kannada.
 class LanguageActionButton extends StatelessWidget {
   final LanguageNotifier languageNotifier;
 
