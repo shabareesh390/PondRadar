@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pondradar/features/alerts/clustering_engine.dart';
+import 'package:pondradar/models/outbreak_alert.dart';
 import 'package:pondradar/models/symptom_report.dart';
 
 void main() {
@@ -203,6 +204,34 @@ void main() {
 
       final clusters = ClusteringEngine.findClusters(reports, referenceTime: now);
       expect(clusters.isEmpty, true);
+    });
+
+    test('Slight centroid shift within grid cell preserves deterministic ID', () {
+      final alertId1 = OutbreakAlert.generateDeterministicId(
+        baseLat,
+        baseLng,
+        now,
+      );
+      // Small shift (~400m)
+      final alertId2 = OutbreakAlert.generateDeterministicId(
+        baseLat + 0.004,
+        baseLng + 0.004,
+        now,
+      );
+
+      expect(alertId1, alertId2);
+    });
+
+    test('Notification ID clamping produces valid 31-bit non-negative integer', () {
+      final alertId = OutbreakAlert.generateDeterministicId(
+        baseLat,
+        baseLng,
+        now,
+      );
+      final notificationId = alertId.hashCode & 0x7FFFFFFF;
+
+      expect(notificationId >= 0, true);
+      expect(notificationId <= 2147483647, true);
     });
   });
 }

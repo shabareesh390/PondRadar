@@ -98,7 +98,9 @@ class _PondRadarAppState extends State<PondRadarApp> {
               }
 
               // Support direct URL navigation on web (e.g. /#/officer or /officer)
-              if (kIsWeb && Uri.base.path.contains('/officer')) {
+              if (kIsWeb &&
+                  (Uri.base.path.contains('/officer') ||
+                      Uri.base.fragment.contains('/officer'))) {
                 return OfficerDashboardScreen(
                   authService: _authService,
                   firestoreService: _firestoreService,

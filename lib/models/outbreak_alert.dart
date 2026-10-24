@@ -26,18 +26,20 @@ class OutbreakAlert {
     this.isSimulated = false,
   });
 
-  /// Deterministic alert key based on date and ~1km grid bucket to keep writes idempotent.
+  /// Deterministic alert key based on ~2.2km regional grid and 48h active time window.
+  /// Prevents slight centroid fluctuations and midnight boundaries from producing duplicate docs.
   static String generateDeterministicId(
     double lat,
     double lng,
     DateTime date,
   ) {
-    // 2 decimal places is roughly ~1.1km grid precision
-    final gridLat = (lat * 100).round() / 100.0;
-    final gridLng = (lng * 100).round() / 100.0;
-    final dateStr =
-        '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-    final key = 'alert_${gridLat.toStringAsFixed(2)}_${gridLng.toStringAsFixed(2)}_$dateStr';
+    // Snap to 0.02-degree (~2.2km) grid cell
+    final gridLat = ((lat / 0.02).round() * 0.02);
+    final gridLng = ((lng / 0.02).round() * 0.02);
+    // Align with 48-hour active outbreak window instead of arbitrary midnight boundary
+    final windowIndex = date.millisecondsSinceEpoch ~/ (48 * 3600 * 1000);
+    final key =
+        'alert_${gridLat.toStringAsFixed(2)}_${gridLng.toStringAsFixed(2)}_w$windowIndex';
     final bytes = utf8.encode(key);
     final digest = sha256.convert(bytes);
     return 'alert_${digest.toString().substring(0, 16)}';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../config/config.dart';
 import '../../config/theme.dart';
 import '../../l10n/translations.dart';
 import '../../models/outbreak_alert.dart';
@@ -30,7 +31,12 @@ class _AlertsScreenState extends State<AlertsScreen> {
   void _checkAndNotifyNewAlerts(List<OutbreakAlert> alerts) {
     if (widget.ponds.isEmpty) return;
 
+    final activeCutoff = DateTime.now()
+        .subtract(const Duration(hours: AppConfig.clusterTimeWindowHours));
+
     for (final alert in alerts) {
+      // Ignore resolved or stale alerts to prevent spamming notifications on launch
+      if (alert.detectedAt.isBefore(activeCutoff)) continue;
       if (_notifiedAlertIds.contains(alert.id)) continue;
 
       // Find the closest pond to this alert
@@ -54,7 +60,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
       if (minDistance <= 15.0) {
         _notifiedAlertIds.add(alert.id);
         NotificationService().showOutbreakAlert(
-          id: alert.id.hashCode,
+          id: alert.id.hashCode & 0x7FFFFFFF,
           title: 'Early Warning: Disease Cluster Near $nearestPondName',
           body:
               'Outbreak cluster detected ${minDistance.toStringAsFixed(1)} km away (${alert.uniqueReporters} farms reporting ${alert.symptoms.join(', ')}).',

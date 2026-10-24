@@ -438,32 +438,53 @@ class FirestoreService {
     await _evaluateAndWriteAlerts();
   }
 
-  /// Clears all simulated demo reports, alerts, and demo ponds.
+  /// Clears all simulated demo reports, alerts, and demo ponds in chunks.
   Future<void> clearDemoData() async {
     if (_firestore == null) return;
-    final batch = _firestore!.batch();
 
     final pubSnap = await _firestore!
         .collection('reports_public')
         .where('isSimulated', isEqualTo: true)
         .get();
-    for (final doc in pubSnap.docs) {
-      batch.delete(doc.reference);
-      batch.delete(_firestore!.collection('reports_private').doc(doc.id));
-    }
 
     final alertsSnap = await _firestore!
         .collection('alerts')
         .where('isSimulated', isEqualTo: true)
         .get();
+
+    // Delete in safe chunks of 400 to prevent exceeding Firestore 500 batch limit
+    const int maxBatchOps = 400;
+    WriteBatch batch = _firestore!.batch();
+    int opCount = 0;
+
+    Future<void> commitIfBatchFull() async {
+      if (opCount >= maxBatchOps) {
+        await batch.commit();
+        batch = _firestore!.batch();
+        opCount = 0;
+      }
+    }
+
+    for (final doc in pubSnap.docs) {
+      batch.delete(doc.reference);
+      batch.delete(_firestore!.collection('reports_private').doc(doc.id));
+      opCount += 2;
+      await commitIfBatchFull();
+    }
+
     for (final doc in alertsSnap.docs) {
       batch.delete(doc.reference);
+      opCount += 1;
+      await commitIfBatchFull();
     }
 
     // Clean up demo pond if present
     final demoPondRef = _firestore!.collection('ponds').doc('demo_pond_udupi');
     batch.delete(demoPondRef);
+    opCount += 1;
 
-    await batch.commit();
+    if (opCount > 0) {
+      await batch.commit();
+    }
   }
 }

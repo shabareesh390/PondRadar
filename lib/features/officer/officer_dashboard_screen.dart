@@ -113,6 +113,31 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
     }).toList();
   }
 
+  List<OutbreakAlert> _filterAlerts(List<OutbreakAlert> alerts) {
+    final now = DateTime.now();
+    return alerts.where((a) {
+      // Filter by time window
+      if (_timeFilter == '24h' &&
+          a.detectedAt.isBefore(now.subtract(const Duration(hours: 24)))) {
+        return false;
+      }
+      if (_timeFilter == '48h' &&
+          a.detectedAt.isBefore(now.subtract(const Duration(hours: 48)))) {
+        return false;
+      }
+      if (_timeFilter == '7d' &&
+          a.detectedAt.isBefore(now.subtract(const Duration(days: 7)))) {
+        return false;
+      }
+
+      // Filter by symptom tag
+      if (_symptomFilter != 'all' && !a.symptoms.contains(_symptomFilter)) {
+        return false;
+      }
+      return true;
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final lang = widget.languageNotifier.currentLanguage;
@@ -135,7 +160,8 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                 return StreamBuilder<List<OutbreakAlert>>(
                   stream: widget.firestoreService.getAlertsStream(),
                   builder: (context, alertSnap) {
-                    final alerts = alertSnap.data ?? [];
+                    final allAlerts = alertSnap.data ?? [];
+                    final filteredAlerts = _filterAlerts(allAlerts);
 
                     if (isMobile) {
                       return Scaffold(
@@ -162,7 +188,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                                   Positioned.fill(
                                     child: _buildMainContent(
                                       filteredReports,
-                                      alerts,
+                                      filteredAlerts,
                                       lang,
                                     ),
                                   ),
@@ -240,14 +266,14 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
 
                                 // 2. Main center workspace (map, reports, or clusters)
                                 Expanded(
-                                   child: Column(
+                                  child: Column(
                                     children: [
                                       _buildTopFilterBar(lang, isMobile: false),
                                       const Divider(height: 1),
                                       Expanded(
                                         child: _buildMainContent(
                                           filteredReports,
-                                          alerts,
+                                          filteredAlerts,
                                           lang,
                                         ),
                                       ),
